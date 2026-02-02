@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑用户</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 50px;
+        }
+
+        /* 打开按钮 */
+        .open-btn {
+            padding: 10px 20px;
+            background-color: #409eff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        /* 弹窗 */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            width: 400px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .modal h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 打开弹窗按钮 -->
+<button class="open-btn" onclick="openModal()">查看用户信息</button>
+
+<!-- 遮罩层 -->
+<div id="overlay" class="overlay" onclick="closeModal()"></div>
+
+<!-- 弹窗 -->
+<div id="editModal" class="modal">
+    <h2>编辑用户</h2>
+
+    <form id="editForm">
+        <label>ID</label>
+        <input type="text" id="userId" value="{{ .user.ID }}" readonly>
+
+        <label>用户名</label>
+        <input type="text" id="username" value="{{ .user.Username }}" required>
+
+        <label>年龄</label>
+        <input type="number" id="age" value="{{ .user.Age }}" required>
+
+        <label>邮箱</label>
+        <input type="email" id="email" value="{{ .user.Email }}" required>
+
+        <div class="actions">
+            <button type="submit" class="save-btn">保存</button>
+            <button type="button" class="cancel-btn" onclick="closeModal()">取消</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("editModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("editModal").style.display = "none";
+    }
+
+    document.getElementById("editForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const userId = document.getElementById("userId").value;
+        const username = document.getElementById("username").value;
+        const age = Number(document.getElementById("age").value);
+        const email = document.getElementById("email").value;
+
+        fetch(`/admin/users/edit/${userId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                age: age,
+                email: email
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message === "用户更新成功") {
+                    alert("更新成功");
+                    closeModal();
+                    window.location.href = "/admin/users";
+                } else {
+                    alert("更新失败");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("请求失败");
+            });
+    });
+</script>
+
+</body>
+</html>

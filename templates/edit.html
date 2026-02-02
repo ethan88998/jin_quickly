@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>编辑用户</title>
+  <style>
+    body { font-family: Arial; }
+    .container { width: 400px; margin: 50px auto; padding: 20px; border-radius: 8px; background-color: #f9f9f9; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    label, input { width: 100%; padding: 10px; margin-bottom: 10px; }
+    button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>编辑用户</h2>
+  <form id="editForm">
+    <label for="username">ID</label>
+    <input type="test" id="userId" value="{{ .user.ID }}">
+    <label for="username">用户名</label>
+    <input type="text" id="username" value="{{ .user.Username }}" required>
+
+    <label for="age">年龄</label>
+    <input type="number" id="age" value="{{ .user.Age }}" required>
+
+    <label for="email">邮箱</label>
+    <input type="email" id="email" value="{{ .user.Email }}" required>
+
+    <button type="submit">更新用户</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById("editForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const userId = document.getElementById("userId").value;
+    const username = document.getElementById("username").value;
+    const age = document.getElementById("age").value;
+    const email = document.getElementById("email").value;
+
+    fetch(`/admin/users/edit/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: username,
+        age: age,
+        email: email
+      })
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.message === "用户更新成功") {
+                alert("用户信息更新成功");
+                window.location.href = "/admin/users";  // 返回用户列表页
+              } else {
+                alert("更新失败");
+              }
+            })
+            .catch(error => {
+              console.error("Error:", error);
+              alert("更新失败");
+            });
+  });
+</script>
+
+</body>
+</html>
