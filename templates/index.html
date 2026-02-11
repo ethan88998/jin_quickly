@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>企业后台管理系统</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- 顶部 Header -->
+<header>
+  <div class="logo">企业后台系统</div>
+  <div class="user-info">
+    当前登录：<strong id="loginUser">ethan002</strong>
+    <a href="/logout" id="logoutBtn">退出</a>
+  </div>
+</header>
+
+<!-- 左侧边栏 -->
+<div class="sidebar">
+  <ul>
+    <li class="active" data-page="users">用户管理</li>
+    <li data-page="moments">朋友圈管理</li>
+    <li data-page="settings">系统设置</li>
+  </ul>
+</div>
+
+<!-- 右侧内容区域 -->
+<div class="content" id="mainContent">
+  <!-- 默认显示用户列表 -->
+</div>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>

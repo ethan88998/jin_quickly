@@ -1,30 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <title>登录</title>
+  <meta charset="UTF-8">
+  <title>用户登录</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Microsoft YaHei", sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      width: 350px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #111827;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 6px;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    form input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    form input:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2563eb;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #1e40af;
+    }
+
+    .message {
+      text-align: center;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .error {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    .success {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #6ee7b7;
+    }
+
+    .switch-register {
+      display: block;
+      text-align: center;
+      font-size: 14px;
+      color: #2563eb;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-<h1>用户登录</h1>
-<form action="/login" method="POST">
-  <label for="username">用户名:</label>
-  <input type="text" name="username" required><br><br>
 
-  <label for="password">密码:</label>
-  <input type="password" name="password" required><br><br>
+<div class="login-container">
+  <h1>用户登录</h1>
 
-  <button type="submit">登录</button>
-</form>
-<!-- 错误信息展示 -->
-{{ if .error }}
-<p style="color:red">{{ .error }}</p>
-{{ end }}
-<!-- 成功信息展示 -->
-{{ if .success }}
-<p style="color:red">{{ .success }}</p>
-{{ end }}
-{{ if .success }}
-<p style="color:red">{{ .username }}</p>
-{{ end }}
+  <!-- 错误信息展示 -->
+  {{ if .error }}
+  <div class="message error">{{ .error }}</div>
+  {{ end }}
+
+  <!-- 成功信息展示 -->
+  {{ if .msg }}
+  <div class="message success">{{ .msg }}</div>
+  {{ end }}
+
+  {{ if .username }}
+  <div class="message error">{{ .username }}</div>
+  {{ end }}
+
+  <form action="/login" method="POST">
+    <label for="username">用户名:</label>
+    <input type="text" name="username" value="{{ .username }}" required>
+
+    <label for="password">密码:</label>
+    <input type="password" name="password" required>
+
+    <button type="submit">登录</button>
+  </form>
+  <!-- 切换到登录 -->
+  <span class="switch-register" onclick="window.location.href='/'">没有账号？去注册</span>
+</div>
+
+
+
 </body>
 </html>
-

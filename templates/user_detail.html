@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>用户详情</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="card">
+    <h2 id="pageTitle"></h2>
+
+    <div class="form-row">
+        <label>用户名</label>
+        <input id="username">
+    </div>
+
+    <div class="form-row">
+        <label>年龄</label>
+        <input id="age" type="number">
+    </div>
+
+    <div class="form-row">
+        <label>邮箱</label>
+        <input id="email">
+    </div>
+
+    <div class="actions">
+        <button class="btn-cancel" onclick="goBack()">返回</button>
+        <button class="btn-save" id="saveBtn" onclick="saveUser()">保存</button>
+    </div>
+</div>
+
+<script src="/static/user_detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!-- userall.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>用户管理后台</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+      background: #f5f6fa;
+    }
+
+    /* ⭐ 整体后台布局 */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ⭐ 左侧边栏 */
+    .sidebar {
+      width: 200px;
+      background: #72a1d1;
+      color: #fff;
+      padding-top: 20px;
+    }
+
+    .sidebar h2 {
+      color: #fff;
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .menu li {
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #cfd3dc;
+    }
+
+    .menu li:hover {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    .menu li.active {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    /* ⭐ 右侧内容区 */
+    .content {
+      flex: 1;
+      padding: 24px;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px 24px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+
+    /* 顶部栏 */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .top-bar h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .top-bar .user {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .top-bar a {
+      color: #ff4d4f;
+      text-decoration: none;
+      margin-left: 10px;
+    }
+
+    /* 搜索栏 */
+    .search-bar {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 12px 16px;
+      background: #fafafa;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .search-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .search-item label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .search-item input {
+      width: 160px;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+    }
+
+    .search-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .btn-primary {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    .btn-default {
+      background: #fff;
+      border: 1px solid #dcdfe6;
+    }
+
+    /* 表格 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead {
+      background: #fafafa;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    tbody tr:hover {
+      background: #f5faff;
+    }
+
+    /* 分页 */
+    .pagination {
+      margin-top: 16px;
+    }
+
+    .pagination button {
+      margin-right: 6px;
+      padding: 4px 10px;
+    }
+
+    /* 操作按钮通用 */
+    .actions button {
+      padding: 4px 10px;
+      margin-right: 6px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* 查看 */
+    .btn-view {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    .btn-view:hover {
+      background: #40a9ff;
+    }
+
+    /* 编辑 */
+    .btn-edit {
+      background: #52c41a;
+      color: #fff;
+    }
+
+    .btn-edit:hover {
+      background: #73d13d;
+    }
+
+    /* 删除 */
+    .btn-delete {
+      background: #ff4d4f;
+      color: #fff;
+    }
+
+    .btn-delete:hover {
+      background: #ff7875;
+    }
+    /* 用户统计栏 */
+    .stat-bar {
+      margin-bottom: 16px;
+      padding: 10px 16px;
+      background: #f6f8fa;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #333;
+      display: flex;
+      align-items: center;
+    }
+
+    .stat-bar strong {
+      color: #1890ff;
+      font-weight: 600;
+      margin: 0 4px;
+    }
+
+    .stat-bar .divider {
+      margin: 0 12px;
+      color: #999;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- ⭐ 左侧菜单 -->
+  <div class="sidebar">
+    <h1>后台管理</h1>
+    <ul class="menu">
+      <li class="active">会员列表</li>
+    </ul>
+  </div>
+
+  <!-- ⭐ 右侧内容 -->
+  <div class="content">
+    <div class="container">
+
+      <div class="top-bar">
+        <h2>会员列表</h2>
+        <div class="user">
+          欢迎你，<strong>{{ .username }} , {{ .email }}</strong>
+          |
+          <a href="/logout">退出</a>
+        </div>
+      </div>
+
+      <!-- 搜索栏 -->
+      <div class="search-bar">
+        <div class="search-item">
+          <label>用户名</label>
+          <input id="searchUsername" placeholder="模糊搜索">
+        </div>
+
+        <div class="search-item">
+          <label>年龄</label>
+          <input id="searchAge" type="number" placeholder="精确">
+        </div>
+
+        <div class="search-item">
+          <label>注册开始时间</label>
+          <input type="date" id="startDate">
+        </div>
+
+        <div class="search-item">
+          <label>注册结束时间</label>
+          <input type="date" id="endDate">
+        </div>
+
+        <div class="search-actions">
+          <button class="btn btn-primary" onclick="searchUsers()">搜索</button>
+          <button class="btn btn-default" onclick="resetSearch()">重置</button>
+          <button class="btn btn-primary" id="addUserBtn">新增用户</button>
+        </div>
+      </div>
+
+      <!-- 用户统计 -->
+      <div class="stat-bar">
+        <span>用户总数：<strong id="totalUsers">0</strong></span>
+        <span class="divider">|</span>
+        <span>今日新增：<strong id="todayUsers">0</strong></span>
+      </div>
+
+
+      <!-- 表格 -->
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>用户名</th>
+          <th>年龄</th>
+          <th>邮箱</th>
+          <th>注册时间</th>
+          <th>更新时间</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+      </table>
+
+      <div id="pagination" class="pagination"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- JS（保持不变） -->
+<script src="/static/user.js"></script>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    loadUserList(1, 10)
+    loadUserStat()
+  })
+</script>
+
+
+
+
+</body>
+</html>
