@@ -16,52 +16,52 @@ func ShowRegister(c *gin.Context) {
 // 提交注册
 func Register(c *gin.Context) {
 	var req struct {
-		Username string `form:"username" json:"username"`
-		Password string `form:"password" json:"password"`
-		Age      int    `form:"age" json:"age"`
-		Email    string `form:"email" json:"email"`
+		Username string `json:"username"`
+		Password string `json:"password"`
+		Age      int    `json:"age"`
+		Email    string `json:"email"`
 	}
 
-	if err := c.ShouldBind(&req); err != nil {
-		c.HTML(http.StatusBadRequest, "register.html", gin.H{"error": "参数错误"})
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "参数错误"})
 		return
 	}
 
 	// 查重
 	var user u.User
 	if err := utils.DB.Where("username = ?", req.Username).First(&user).Error; err == nil {
-		c.HTML(http.StatusBadRequest, "register.html", gin.H{"error": "用户已存在"})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "用户已存在"})
 		return
 	}
 
-	// 创建用户
+	// 组装数据
 	newUser := u.User{
 		Username: req.Username,
 		Password: req.Password,
 		Age:      req.Age,
 		Email:    req.Email,
+		Status:   1, // 默认启用
 	}
+
 	if err := utils.DB.Create(&newUser).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "注册失败"})
-	}
-
-	// 注册成功生成JWT
-	token, err := utils.GenToken(
-		newUser.ID,
-		newUser.Username,
-		newUser.Age,
-		newUser.Email,
-	)
-
-	if err != nil {
-		c.String(http.StatusInternalServerError, "token 生成失败")
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "注册失败"})
 		return
 	}
 
-	// 生成token
-	c.SetCookie("token", token, 3600, "/", "", false, true)
+	// 生成 JWT
+	token, err := utils.GenToken(newUser.ID, newUser.Username, newUser.Age, newUser.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "token生成失败"})
+		return
+	}
 
-	// 进入后台用户列表
-	c.Redirect(http.StatusFound, "/admin/user")
+	// 写入 cookie
+	c.SetCookie("token", token, 3600*24, "/", "", false, true)
 
+	// 返回 JSON 成功
+	c.JSON(http.StatusOK, gin.H{
+		"msg":   "注册成功",
+		"token": token,
+		"user":  newUser,
+	})
 }

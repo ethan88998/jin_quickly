@@ -69,15 +69,6 @@
       background-color: #1e40af;
     }
 
-    .switch-login {
-      display: block;
-      text-align: center;
-      font-size: 14px;
-      color: #2563eb;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
     .message {
       text-align: center;
       margin-bottom: 15px;
@@ -97,6 +88,16 @@
       color: #065f46;
       border: 1px solid #6ee7b7;
     }
+
+    .switch-login {
+      display: block;
+      text-align: center;
+      font-size: 14px;
+      color: #2563eb;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
@@ -104,35 +105,27 @@
 <div class="register-container">
   <h1>用户注册</h1>
 
-  <!-- 错误信息 -->
-  {{ if .error }}
-  <div class="message error">{{ .error }}</div>
-  {{ end }}
+  <form action="/register" method="POST" id="registerForm">
+    <div class="message" style="display:none"></div>
 
-  <!-- 成功信息 -->
-  {{ if .msg }}
-  <div class="message success">{{ .msg }}</div>
-  {{ end }}
-
-  <form action="/register" method="POST">
     <label for="username">用户名:</label>
-    <input type="text" name="username" value="{{ .username }}" required>
+    <input type="text" name="username" id="username" required>
 
     <label for="password">密码:</label>
-    <input type="password" name="password" required>
+    <input type="password" name="password" id="password" required>
 
     <label for="email">邮箱:</label>
-    <input type="text" name="email" value="{{ .email }}" required>
+    <input type="email" name="email" id="email" required>
 
     <label for="age">年龄:</label>
-    <input type="text" name="age" value="{{ .age }}" required>
+    <input type="number" name="age" id="age" required>
 
     <button type="submit">注册</button>
   </form>
 
-  <!-- 切换到登录 -->
   <span class="switch-login" onclick="window.location.href='/login'">已有账号？去登录</span>
 </div>
 
+<script src="/static/js/loginregister.js"></script>
 </body>
 </html>

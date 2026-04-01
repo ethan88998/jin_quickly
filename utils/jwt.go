@@ -26,7 +26,7 @@ func GenToken(userID uint, username string, age int, email string) (string, erro
 		Email:    email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "ethan",
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 1)),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

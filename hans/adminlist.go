@@ -10,18 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//func Adminlist(c *gin.Context) {
-//	var users []u.User
-//
-//	// 查询所有用户
-//	if err := utils.DB.Find(&users).Error; err != nil {
-//		c.HTML(http.StatusInternalServerError, "userlist.html", gin.H{"error": "查询用户失败"})
-//		return
-//	}
-//	c.HTML(http.StatusOK, "userlist.html", gin.H{"users": users})
-//
-//}
-
 func Adminlist(c *gin.Context) {
 	// 1. 取当前登录用户
 	uid, _ := c.Get("user")
@@ -53,27 +41,6 @@ func UserListPage(c *gin.Context) {
 	})
 }
 
-//func UserListApi(c *gin.Context) {
-//	// 1. 取当前登录用户
-//	uid, _ := c.Get("user")
-//	username, _ := c.Get("username")
-//	age, _ := c.Get("age")
-//	email, _ := c.Get("email")
-//
-//	var users []models.User
-//	utils.DB.Find(&users)
-//
-//	c.JSON(http.StatusOK, gin.H{
-//		"data":     users,
-//		"uid":      uid,
-//		"username": username,
-//		"age":      age,
-//		"email":    email,
-//		"code":     200,
-//		"msg":      "ok",
-//	})
-//}
-
 func UserListApi(c *gin.Context) {
 	username := c.Query("username")
 	ageStr := c.Query("age")
@@ -98,9 +65,11 @@ func UserListApi(c *gin.Context) {
 
 	// 年龄
 	if ageStr != "" {
-		if age, err := strconv.Atoi(ageStr); err == nil {
-			db = db.Where("age = ?", age)
+		age, err := strconv.Atoi(ageStr)
+		if err != nil {
+			c.JSON(400, gin.H{"error": "年龄必须是数字"})
 		}
+		db = db.Where("age >= ?", age)
 	}
 
 	// 注册时间
@@ -154,6 +123,7 @@ func UserList(c *gin.Context) {
 	startDate := c.Query("start_date")
 	endDate := c.Query("end_date")
 
+	// 构建DB
 	db := utils.DB.Model(&models.User{})
 
 	// 用户名模糊
@@ -214,4 +184,38 @@ func UserList(c *gin.Context) {
 		"page":     page,
 		"pageSize": pageSize,
 	})
+}
+
+// 状态接口
+type ChangeStatusReq struct {
+	ID     int64 `json:"id" binding:"required,gt=0"`
+	Status int   `json:"status"`
+}
+
+func ChangeUserStatus(c *gin.Context) {
+	var req ChangeStatusReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "参数错误"})
+		return
+	}
+
+	if req.Status != 0 && req.Status != 1 {
+		c.JSON(400, gin.H{"msg": "非法状态"})
+		return
+	}
+
+	err := utils.DB.Model(&models.User{}).
+		Where("id = ?", req.ID).
+		Update("status", req.Status).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "更新失败"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"msg":    "状态变更成功",
+		"status": req.Status,
+	})
+
 }

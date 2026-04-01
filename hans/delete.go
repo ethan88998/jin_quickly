@@ -1,7 +1,6 @@
 package hans
 
 import (
-	"fmt"
 	u "jin_quickly/models"
 	"jin_quickly/utils"
 	"net/http"
@@ -27,6 +26,6 @@ func DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"msg":  "用户删除成功",
+		"user": user.Username,
 	})
-	fmt.Println("删除用户:", user)
 }

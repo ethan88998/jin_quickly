@@ -8,73 +8,61 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 获取用户编辑页面的数据
+// 页面：只返回 HTML
 func UserDetailPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "user_detail.html", nil)
-
 }
 
-func ShowEditUserPage(c *gin.Context) {
-	id := c.DefaultQuery("id", "0")
-	var user u.User
-	if err := utils.DB.First(&user, id).Error; err != nil {
-		c.HTML(http.StatusOK, "edit.html", gin.H{"user": user})
-	}
-}
-
-// 获取用户数据信息
+// API：只返回 JSON
 func UserDetailApi(c *gin.Context) {
 	id := c.Query("id")
 
 	var user u.User
 	if err := utils.DB.First(&user, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": "用户不存在"})
+		c.JSON(404, gin.H{
+			"code": 404,
+			"msg":  "用户不存在",
+		})
 		return
 	}
 
 	user.Password = ""
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": user,
+	c.JSON(200, gin.H{
 		"code": 200,
 		"msg":  "ok",
+		"data": user,
 	})
 }
 
-// 保存编辑数据
 func UpdateUserApi(c *gin.Context) {
 	id := c.Query("id")
 
 	var user u.User
 	if err := utils.DB.First(&user, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"msg":  "用户不存在",
-			"code": 404,
-		})
+		c.JSON(404, gin.H{"code": 404, "msg": "用户不存在"})
 		return
 	}
 
 	var req struct {
-		Username string `json:"username"`
-		Age      int    `json:"age"`
-		Email    string `json:"email"`
+		Username string `json:"username" binding:"required"`
+		Age      int    `json:"age" binding:"required"`
+		Email    string `json:"email" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"msg":  "参数错误2",
-			"code": 400,
-		})
+		c.JSON(400, gin.H{"code": 400, "msg": "参数错误"})
 		return
 	}
 
 	user.Username = req.Username
 	user.Age = req.Age
 	user.Email = req.Email
+	if err := utils.DB.Save(&user).Error; err != nil {
+		c.JSON(400, gin.H{"msg": err.Error()})
+		return
+	}
 
-	utils.DB.Save(&user)
-	c.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		"msg":  "保存成功",
-	})
+	user.Password = ""
+	c.JSON(200, gin.H{"code": 200, "msg": "保存成功", "data": user})
 }

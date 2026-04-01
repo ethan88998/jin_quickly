@@ -29,25 +29,35 @@ func main() {
 	r.POST("/login", hans.Login)
 	r.GET("/logout", hans.Logout)
 
-	admin := r.Group("/admin")
+	admin := r.Group("/admin/user")
 	admin.Use(middlewares.JWTAuth())
 	{
 		// 用户管理
-		admin.GET("/user", hans.UserListPage)
-		admin.GET("/user/api", hans.UserList)
+		admin.GET("/", hans.UserListPage)
+		admin.GET("/api", hans.UserList)
 		// 删除用户
-		admin.DELETE("/user/:id", hans.DeleteUser)
-		// 编辑用户
-		admin.GET("/user/detail", hans.UserDetailPage)
-		admin.GET("/user/detail/api", hans.UserDetailApi)
-		// 更新数据
-		admin.PUT("/user/detail/api", hans.UpdateUserApi)
+		admin.DELETE("/:id", hans.DeleteUser)
+
+		// 新增
+		admin.GET("/add", hans.AddUserPage)
+		admin.POST("/add/api", hans.AddUserApi)
+
+		// 页面
+		admin.GET("/detail", hans.UserDetailPage)
+
+		// JSON API
+		admin.GET("/detail/api", hans.UserDetailApi)
+		admin.PUT("/detail/api", hans.UpdateUserApi)
+
 		// 搜索用户
-		admin.GET("/user/search/api", hans.SearchUserapi)
+		admin.GET("/search/api", hans.SearchUserapi)
 
 		// 用户统计
-		admin.GET("/user/total/api", hans.UserStat)
+		admin.GET("/total/api", hans.UserStat)
+
+		// 状态
+		admin.POST("/status", hans.ChangeUserStatus)
 	}
 
-	r.Run(":8081")
+	r.Run("0.0.0.0:8081")
 }

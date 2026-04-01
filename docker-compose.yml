@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: jin_mysql
+    restart: always
+    environment:
+#      MYSQL_ROOT_PASSWORD: root123
+#      MYSQL_DATABASE: jin_quickly
+      MYSQL_ROOT_PASSWORD: app123456
+      MYSQL_DATABASE: register
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:3306:3306"   # ⚠️ 只允许本机访问数据库
+
+  app:
+    build: .
+    container_name: jin_app
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "0.0.0.0:8082:8081"     # ✅ 内网可访问
+    environment:
+      TZ: Asia/Shanghai
+
+volumes:
+  mysql_data:
+
+

@@ -8,4 +8,5 @@ type User struct {
 	Password string `json:"password" gorm:"not null"`
 	Age      int    `json:"age"`
 	Email    string `json:"email"`
+	Status   int    `json:"status"`
 }

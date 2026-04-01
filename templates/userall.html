@@ -240,6 +240,7 @@
       color: #999;
     }
 
+
   </style>
 </head>
 
@@ -293,7 +294,7 @@
         <div class="search-actions">
           <button class="btn btn-primary" onclick="searchUsers()">搜索</button>
           <button class="btn btn-default" onclick="resetSearch()">重置</button>
-          <button class="btn btn-primary" id="addUserBtn">新增用户</button>
+          <button class="btn btn-primary" id="addUserBtn" onclick="location.href='/admin/user/add'">➕ 新增用户</button>
         </div>
       </div>
 
@@ -338,8 +339,6 @@
     loadUserStat()
   })
 </script>
-
-
 
 
 </body>

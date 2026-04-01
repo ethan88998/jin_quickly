@@ -95,6 +95,7 @@
       color: #2563eb;
       cursor: pointer;
       text-decoration: underline;
+      margin-top: 12px;
     }
   </style>
 </head>
@@ -103,34 +104,21 @@
 <div class="login-container">
   <h1>用户登录</h1>
 
-  <!-- 错误信息展示 -->
-  {{ if .error }}
-  <div class="message error">{{ .error }}</div>
-  {{ end }}
+  <form action="/login" method="POST" id="loginForm">
+    <div class="message" style="display:none"></div>
 
-  <!-- 成功信息展示 -->
-  {{ if .msg }}
-  <div class="message success">{{ .msg }}</div>
-  {{ end }}
-
-  {{ if .username }}
-  <div class="message error">{{ .username }}</div>
-  {{ end }}
-
-  <form action="/login" method="POST">
     <label for="username">用户名:</label>
-    <input type="text" name="username" value="{{ .username }}" required>
+    <input type="text" name="username" id="username" required>
 
     <label for="password">密码:</label>
-    <input type="password" name="password" required>
+    <input type="password" name="password" id="password" required>
 
     <button type="submit">登录</button>
   </form>
-  <!-- 切换到登录 -->
+
   <span class="switch-register" onclick="window.location.href='/'">没有账号？去注册</span>
 </div>
 
-
-
+<script src="/static/js/loginregister.js"></script>
 </body>
 </html>

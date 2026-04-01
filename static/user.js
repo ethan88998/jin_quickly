@@ -22,31 +22,39 @@ function loadUserList(page = 1, pageSize = 10) {
 }
 
 
-function renderUserTable(users) {
-    const tbody = document.getElementById("userTable")
-    tbody.innerHTML = ""
-
-    users.forEach(user => {
-        const tr = document.createElement("tr")
-        tr.innerHTML = `
-            <td>${user.ID}</td>
-            <td>${user.username}</td>
-            <td>${user.age}</td>
-            <td>${user.email}</td>
-            <td>${formatTime(user.CreatedAt)}</td>
-            <td>${formatTime(user.UpdatedAt)}</td>
-            <td class="actions">
-                <button class="btn btn-view"  onclick="openUser(${user.ID}, 'view')">查看</button>
-                <button class="btn btn-edit"  onclick="openUser(${user.ID}, 'edit')">编辑</button>
-                <button class="btn btn-delete"  onclick="deleteUser(${user.ID}, this.closest('tr'))">删除</button>
-            </td>
-        `
-        tbody.appendChild(tr)
-    })
+function renderUserTable(users){
+    const tbody=document.getElementById("userTable");
+    tbody.innerHTML="";
+    users.forEach(user=>{
+        const status=Number(user.status??user.Status??0);
+        const statusText=status===1?'<span style="color:green;font-weight:bold">启用</span>':'<span style="color:red;font-weight:bold">停用</span>';
+        const statusBtn=status===1?`<button class="btn-status" onclick="changeStatus(${user.ID},0)">停用</button>`:`<button class="btn-status" onclick="changeStatus(${user.ID},1)">启用</button>`;
+        const tr=document.createElement("tr");
+        tr.innerHTML=`
+      <td>${user.ID}</td>
+      <td>${user.username}</td>
+      <td>${user.age}</td>
+      <td>${user.email}</td>
+      <td>${statusText} ${statusBtn}</td>
+      <td>${formatTime(user.CreatedAt)}</td>
+      <td>${formatTime(user.UpdatedAt)}</td>
+      <td class="actions">
+        <button class="btn btn-view" onclick="openUser(${user.ID},'view')">查看</button>
+        <button class="btn btn-edit" onclick="openUser(${user.ID},'edit')">编辑</button>
+        <button class="btn btn-delete" onclick="deleteUser(${user.ID},this.closest('tr'))">删除</button>
+      </td>
+    `;
+        tbody.appendChild(tr);
+        console.log("渲染用户:",user.ID,user.username,"status:",status);
+    });
 }
 
+
+
+
+
 function openUser(id, mode) {
-    location.href = `/admin/user/api/detail?id=${id}&mode=${mode}`
+    location.href = `/admin/user/detail?id=${id}&mode=${mode}`
 }
 
 function deleteUser(id, row) {
@@ -64,7 +72,7 @@ function deleteUser(id, row) {
 
 // 用户统计
 function loadUserStat() {
-fetch('/admin/user/api/total')
+fetch('/admin/user/total/api')
     .then(res => res.json())
     .then(data => {
         document.getElementById('totalUsers').innerText = data.total
@@ -172,3 +180,17 @@ function resetSearch() {
 document.addEventListener('DOMContentLoaded', () => {
     loadUsers()
 })
+
+function changeStatus(id,status){
+    const text=status===1?'启用':'停用';
+    if(!confirm(`确认${text}该用户？`)) return;
+    fetch('/admin/user/status',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id,status})
+    }).then(res=>res.json()).then(res=>{
+        alert(res.msg);
+        loadUserList(); // 仅刷新列表
+    });
+}
+

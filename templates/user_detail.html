@@ -3,34 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <title>用户详情</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #d0d0d0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            width: 100px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group span {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group span {
+            background-color: #f0f2f5;
+            color: #111;
+            border: 1px solid #ccc;
+        }
+
+        .form-group input {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #111;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            margin-top: 25px;
+            background-color: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #1565c0;
+        }
+
+        .btn + .btn {
+            margin-left: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .form-group label {
+                margin-bottom: 5px;
+            }
+            .btn {
+                width: 100%;
+                margin: 10px 0 0 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="card">
-    <h2 id="pageTitle"></h2>
+<div class="container">
+    <h2 id="pageTitle">用户详情</h2>
 
-    <div class="form-row">
+    <div class="form-group">
+        <label>ID</label>
+        <span id="uid"></span>
+    </div>
+    <div class="form-group">
         <label>用户名</label>
-        <input id="username">
+        <input type="text" id="username" disabled>
     </div>
-
-    <div class="form-row">
+    <div class="form-group">
         <label>年龄</label>
-        <input id="age" type="number">
+        <input type="number" id="age" disabled>
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" disabled>
     </div>
 
-    <div class="form-row">
-        <label>邮箱</label>
-        <input id="email">
-    </div>
-
-    <div class="actions">
-        <button class="btn-cancel" onclick="goBack()">返回</button>
-        <button class="btn-save" id="saveBtn" onclick="saveUser()">保存</button>
-    </div>
+    <button class="btn" id="saveBtn" style="display:none" onclick="saveUser()">保存</button>
+    <button class="btn" onclick="history.back()">返回</button>
 </div>
 
-<script src="/static/user_detail.js"></script>
+<script src="/static/js/user_detail.js"></script>
 </body>
 </html>
